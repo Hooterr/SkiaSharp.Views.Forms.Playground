@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="SkiaPlayground.Views.AboutPage"
+    xmlns="http://xamarin.com/schemas/2014/forms"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+    xmlns:vm="clr-namespace:SkiaPlayground.ViewModels" xmlns:compiler="clr-namespace:SkiaPlayground.Compiler"
+    Title="{Binding Title}">
+
+    <ContentPage.BindingContext>
+        <vm:AboutViewModel />
+    </ContentPage.BindingContext>
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color
+                x:Key="Accent">
+                #96d1ff
+            </Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition
+                Height="200" />
+            <RowDefinition
+                Height="50" />
+            <RowDefinition
+                Height="*" />
+        </Grid.RowDefinitions>
+
+        <Editor
+            x:Name="editor"
+            Grid.Row="2"
+            Text="{Binding SourceCode}" />
+
+        <StackLayout
+            Grid.Row="1"
+            HorizontalOptions="Center"
+            Orientation="Horizontal">
+            <Button
+                x:Name="compileButton"
+                Grid.Row="1"
+                Clicked="Button_Clicked"
+                Text="Compile!" />
+            <Button
+                Clicked="Button_Clicked_1"
+                Text="InvalidateSurface" />
+        </StackLayout>
+
+        <skia:SKCanvasView
+            x:Name="canvas"
+            Grid.Row="0"
+            BackgroundColor="White"
+            PaintSurface="canvas_PaintSurface" />
+
+        <ScrollView
+            BackgroundColor="LightGray"
+            x:Name="scroll"
+            IsVisible="False"
+            Grid.Row="0">
+
+            <StackLayout x:Name="errors" BackgroundColor="Transparent"
+                         Padding="10">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="compiler:CompilationMessage">
+                        <Label TextColor="Red">
+                            <Label.Text>
+                                <MultiBinding StringFormat="{}{2}, Line {0}: {1}">
+                                    <Binding Path="LineNumber" />
+                                    <Binding Path="Message" />
+                                    <Binding Path="Severity" />
+                                </MultiBinding>
+                            </Label.Text>
+                        </Label>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+
+            </StackLayout>
+
+        </ScrollView>
+
+    </Grid>
+
+</ContentPage>
